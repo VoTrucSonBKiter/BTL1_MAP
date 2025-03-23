@@ -34,3 +34,10 @@
    git commit -m "Messages"
    git push origin main
    ```
+3. *How to update your branch*
+   ```
+   *git branch -a (make sure you not in main, if yes, plz use "git checkout branchName" && "git merge main")
+   git add .
+   git commit -m "messages"
+   git push origin branchName
+   ```
