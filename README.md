@@ -1,4 +1,4 @@
-# BTL1_MAP
+# BTL1_MAP (1st Deadline 23h59 24/3/2025)
 # Main role:
 ## Người 1 - Giao diện & Component UI
  - Chuyển thiết kế từ Figma sang React + Tailwind (twin.macro).
