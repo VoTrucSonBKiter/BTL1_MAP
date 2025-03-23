@@ -1,4 +1,22 @@
 # BTL1_MAP
+# Main role:
+## Người 1 - Giao diện & Component UI
+ - Chuyển thiết kế từ Figma sang React + Tailwind (twin.macro).
+ - Tạo các component tái sử dụng: nút bấm, input, modal, v.v.
+ - Xây dựng các trang chính:
+   - Trang chủ
+   - Trang đặt vé
+   - Trang giỏ hàng
+## Người 2 - Camera & Xử lý video đầu vào
+ - Tích hợp API camera (navigator.mediaDevices.getUserMedia).
+ - Hiển thị camera trên giao diện.
+ - Kiểm tra quyền truy cập camera.
+ - Xử lý UI khi bật/tắt camera.
+## Người 3 - Routing & Quản lý State
+ - Define router cho các trang.
+ - Quản lý state với Redux hoặc React Context.
+ - Lưu thông tin đơn hàng vào local storage.
+ - Điều hướng khi đặt vé xong.
 # Contributors
 1. *Create new branch for your submission*
    ```
