@@ -1,3 +1,14 @@
 <resources>
+    <string name="welcome_text">Trang chủ</string>
+    <string name="open_camera">Mở máy ảnh</string>
+    <string name="show_position">Xem vị trí</string>
+    <string name="sign_out">Đăng xuất</string>
+    <string name="capture_button">Chụp</string>
+    <string name="your_location">Your Location:</string>
+    <string name="get_location">Get Location</string>
     <string name="app_name">My Application</string>
+    <string name="email">Email</string>
+    <string name="pid">Mã số cá nhân</string>
+    <string name="login_button">Đăng nhập</string>
+    <string name="return_main">Quay lại</string>
 </resources>

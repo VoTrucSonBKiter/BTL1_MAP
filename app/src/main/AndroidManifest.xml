@@ -12,15 +12,31 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
-        <activity
-            android:name=".MainActivity"
+        <!-- SignActivity là màn hình khởi động -->
+        <activity android:name=".SignActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- MainActivity (Chỉ mở sau khi đăng nhập) -->
+        <activity android:name=".MainActivity"
+            android:exported="true" />
+
+        <!-- Camera Activity -->
+        <activity android:name=".CameraActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CameraActivity"
+            tools:ignore="Instantiatable" />
+
+        <!-- Position Activity -->
+        <activity android:name=".PositionActivity"
+            android:exported="false"
+            tools:ignore="Instantiatable" />
+
     </application>
+
 
 </manifest>
