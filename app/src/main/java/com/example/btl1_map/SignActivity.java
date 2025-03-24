@@ -1,17 +1,16 @@
-package com.example.myapplication;
+package com.example.btl1_map;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.myapplication.api.ApiClient;
-import com.example.myapplication.api.ApiService;
-import com.example.myapplication.api.LoginRequest;
-import com.example.myapplication.api.LoginResponse;
+import com.example.btl1_map.api.ApiClient;
+import com.example.btl1_map.api.ApiService;
+import com.example.btl1_map.api.LoginRequest;
+import com.example.btl1_map.api.LoginResponse;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,13 +19,12 @@ public class SignActivity extends AppCompatActivity {
     private static final String TAG = "SignActivity";
     private EditText etEmail;
     private EditText etPassword;
-    private Button btnSignIn;
+    private TextView btnSignIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign);
-
 
         // Initialize views
         etEmail = findViewById(R.id.etEmail);
@@ -75,4 +73,4 @@ public class SignActivity extends AppCompatActivity {
             });
         });
     }
-}
+} 

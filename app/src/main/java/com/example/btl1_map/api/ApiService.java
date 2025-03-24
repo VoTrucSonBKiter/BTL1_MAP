@@ -1,4 +1,4 @@
-package com.example.myapplication.api;
+package com.example.btl1_map.api;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

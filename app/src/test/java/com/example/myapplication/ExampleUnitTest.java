@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.btl1_map;
 
 import org.junit.Test;
 

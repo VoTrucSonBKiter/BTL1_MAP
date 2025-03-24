@@ -1,4 +1,4 @@
-package com.example.myapplication.api;
+package com.example.btl1_map.api;
 
 public class LoginRequest {
     private String email;
