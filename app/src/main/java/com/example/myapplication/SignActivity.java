@@ -2,6 +2,8 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.TextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,6 +17,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SignActivity extends AppCompatActivity {
+    private static final String TAG = "SignActivity";
     private EditText etEmail;
     private EditText etPassword;
     private Button btnSignIn;
@@ -23,6 +26,7 @@ public class SignActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign);
+
 
         // Initialize views
         etEmail = findViewById(R.id.etEmail);

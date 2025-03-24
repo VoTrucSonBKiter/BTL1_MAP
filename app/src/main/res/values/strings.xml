@@ -11,4 +11,13 @@
     <string name="pid">Mã số cá nhân</string>
     <string name="login_button">Đăng nhập</string>
     <string name="return_main">Quay lại</string>
+    <string name="find_surface">TÌM MẶT PHẲNG</string>
+    <string name="find_image">TÌM HÌNH ẢNH</string>
+    <string name="choose_display">CHỌN CÁCH HIỂN THỊ</string>
+    <string name="top_right_button">top_right_button</string>
+    <string name="contentDes">contentDescription</string>
+    <string name="info">Info</string>
+    <string name="practice">Practice</string>
+    <string name="doc">...</string>
+    <string name="homepage">MÀN HÌNH CHÍNH</string>
 </resources>
