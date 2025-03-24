@@ -5,43 +5,89 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_gray"
     tools:context=".PositionActivity">
 
-    <TextView
-        android:id="@+id/tvLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/your_location"
-        android:textSize="18sp"
-        android:padding="16dp"
+    <!-- 4 ImageView in the left top column -->
+    <ImageView
+        android:id="@+id/ivTop1"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ob1"
+        android:contentDescription="@string/contentDes"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"/>
 
+    <ImageView
+        android:id="@+id/ivTop2"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ob2"
+        android:contentDescription="@string/contentDes"
+        app:layout_constraintTop_toBottomOf="@id/ivTop1"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"/>
+
+    <ImageView
+        android:id="@+id/ivTop3"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ob3"
+        android:contentDescription="@string/contentDes"
+        app:layout_constraintTop_toBottomOf="@id/ivTop2"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"/>
+
+    <ImageView
+        android:id="@+id/ivTop4"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ob4"
+        android:contentDescription="@string/contentDes"
+        app:layout_constraintTop_toBottomOf="@id/ivTop3"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"/>
+
+
+    <!-- Bottom Container with Background -->
     <LinearLayout
+        android:id="@+id/bottomContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/blue"
         android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/tvLocation"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <Button
-            android:id="@+id/btnReturn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/return_main"
-            android:padding="12dp"
-            android:layout_marginEnd="20dp"/>
+        <ImageView
+            android:id="@+id/ivBottomLeft"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/arrow"
+            android:contentDescription="@string/contentDes"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_gravity="center_vertical"/>
 
-        <Button
-            android:id="@+id/btnGetLocation"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/btnChooseDisplay"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/get_location"
-            android:padding="12dp"/>
+            android:text="@string/homepage"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:background="@color/blue"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:padding="15dp"
+            android:gravity="center"
+            android:layout_marginEnd="35dp"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

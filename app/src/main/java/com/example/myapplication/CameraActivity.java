@@ -9,7 +9,7 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera); // Đảm bảo activity_camera.xml tồn tại
-        findViewById(R.id.btnReturn).setOnClickListener(v -> startActivity(new Intent(CameraActivity.this, MainActivity.class)));
+        findViewById(R.id.ivBottomLeft).setOnClickListener(v -> startActivity(new Intent(CameraActivity.this, MainActivity.class)));
 
     }
 }

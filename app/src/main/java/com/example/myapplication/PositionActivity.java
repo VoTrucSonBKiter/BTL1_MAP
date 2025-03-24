@@ -9,7 +9,7 @@ public class PositionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_position); // Đảm bảo activity_position.xml tồn tại
-        findViewById(R.id.btnReturn).setOnClickListener(v -> startActivity(new Intent(PositionActivity.this, MainActivity.class)));
+        findViewById(R.id.ivBottomLeft).setOnClickListener(v -> startActivity(new Intent(PositionActivity.this, MainActivity.class)));
 
     }
 }

@@ -12,26 +12,25 @@
     <ImageView
         android:id="@+id/imgUniversityLogo"
         android:layout_width="350dp"
-        android:layout_height="120dp"
+        android:layout_height="100dp"
         android:src="@drawable/university_logo"
         android:scaleType="fitCenter"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="5dp"
         tools:ignore="ContentDescription" />
 
-    <!-- Logo BIOTECH -->
+    <!-- Logo -->
     <ImageView
         android:id="@+id/imgBiotechLogo"
-        android:layout_width="850dp"
-        android:layout_height="300dp"
-        android:layout_marginTop="5dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/biotech_logo"
+        android:src="@drawable/logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imgUniversityLogo"
+        app:layout_constraintBottom_toTopOf="@id/containerLogin"
         tools:ignore="ContentDescription,ImageContrastCheck,VisualLintBounds" />
 
     <!-- Container xanh đậm -->
@@ -54,13 +53,12 @@
         android:layout_width="350dp"
         android:layout_height="50dp"
         android:hint="@string/email"
-        android:textStyle="bold"
         android:inputType="textEmailAddress"
         android:autofillHints="email"
         android:background="@drawable/rounded_edittext"
         android:padding="12dp"
         android:textColor="@color/black"
-        android:textColorHint="@color/gray"
+        android:textColorHint="@color/new_gray"
         android:gravity="center"
         android:textAlignment="center"
         app:layout_constraintTop_toBottomOf="@id/imgBiotechLogo"
@@ -74,13 +72,12 @@
         android:layout_width="350dp"
         android:layout_height="50dp"
         android:hint="@string/pid"
-        android:textStyle="bold"
         android:inputType="textVisiblePassword"
         android:autofillHints="password"
         android:background="@drawable/rounded_edittext"
         android:padding="12dp"
         android:textColor="@color/black"
-        android:textColorHint="@color/gray"
+        android:textColorHint="@color/new_gray"
         android:gravity="center"
         android:textAlignment="center"
         app:layout_constraintTop_toBottomOf="@id/etEmail"
@@ -88,16 +85,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="30dp"/>
 
-    <Button
+    <TextView
         android:id="@+id/btnSignIn"
         android:layout_width="300dp"
         android:layout_height="50dp"
         android:text="@string/login_button"
+        android:padding="12dp"
+        android:gravity="center"
         android:textSize="18sp"
-        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textColor="@color/black"
         android:background="@drawable/rounded_button"
-        android:backgroundTint="@null"
-        android:textAlignment="center"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintTop_toBottomOf="@id/etPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
