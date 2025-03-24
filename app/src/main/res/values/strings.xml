@@ -20,4 +20,7 @@
     <string name="practice">Practice</string>
     <string name="doc">...</string>
     <string name="homepage">MÀN HÌNH CHÍNH</string>
+    <string name="turn_on_camera">Bật máy ảnh</string>
+    <string name="turn_off_camera">Tắt máy ảnh</string>
 </resources>
+
