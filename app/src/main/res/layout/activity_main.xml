@@ -30,7 +30,7 @@
         app:layout_constraintWidth_percent="0.8"
         android:layout_marginStart="100dp"
         android:layout_marginEnd="100dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:elevation="4dp">
 
         <LinearLayout
@@ -42,7 +42,7 @@
             <ImageView
                 android:id="@+id/ivFindSurface"
                 android:layout_width="match_parent"
-                android:layout_height="230dp"
+                android:layout_height="210dp"
                 android:contentDescription="@string/contentDes"
                 android:scaleType="centerCrop"
                 android:src="@drawable/find_surface"/>
@@ -82,7 +82,7 @@
             <ImageView
                 android:id="@+id/ivFindImage"
                 android:layout_width="match_parent"
-                android:layout_height="230dp"
+                android:layout_height="210dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/find_image"
                 android:contentDescription="@string/contentDes"

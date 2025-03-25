@@ -16,10 +16,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SignActivity extends AppCompatActivity {
-    private static final String TAG = "SignActivity";
     private EditText etEmail;
     private EditText etPassword;
-    private TextView btnSignIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +27,7 @@ public class SignActivity extends AppCompatActivity {
         // Initialize views
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
-        btnSignIn = findViewById(R.id.btnSignIn);
+        TextView btnSignIn = findViewById(R.id.btnSignIn);
 
         btnSignIn.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
@@ -54,7 +52,7 @@ public class SignActivity extends AppCompatActivity {
                     if (response.isSuccessful() && response.body() != null) {
                         // Login successful
                         Toast.makeText(SignActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-                        
+
                         // Navigate to MainActivity
                         Intent intent = new Intent(SignActivity.this, MainActivity.class);
                         startActivity(intent);
@@ -73,4 +71,4 @@ public class SignActivity extends AppCompatActivity {
             });
         });
     }
-} 
+}
