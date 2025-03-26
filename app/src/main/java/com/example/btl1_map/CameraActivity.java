@@ -1,5 +1,6 @@
 package com.example.btl1_map;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -26,6 +28,8 @@ import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
+
+import com.bumptech.glide.Glide;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.concurrent.ExecutionException;
@@ -44,6 +48,14 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera); // Đảm bảo activity_camera.xml tồn tại
+
+        // Load ảnh từ URL vào ImageView
+        @SuppressLint("CutPasteId") ImageView ivBottomLeft = this.findViewById(R.id.ivBottomLeft);
+        String imageUrl = "https://i.imgur.com/CaB5uuZ.png"; // Thay bằng URL ảnh của bạn
+
+        Glide.with(this)
+                .load(imageUrl)
+                .into(ivBottomLeft);
 
         previewView = findViewById(R.id.preview_view);
         View buttonToggleCamera = findViewById(R.id.button_toggle_camera);
