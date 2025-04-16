@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFF</color>
+    <color name="purple">#6551a6</color>
+    <color name="black">#000000</color>
+    <color name="gray">#B0B0B0</color>
+    <color name="light_gray">#d9d9d9</color>
+    <color name="dark_gray">#555555</color>
+    <color name="new_gray">#888888</color>
+    <color name="blue">#2A5DB0</color>
+    <color name="light_blue">#D6E6FF</color>
+    <color name="dark_blue">#004080</color>
+    <color name="new_blue">#73A7EA</color>
+    <color name="default_button_color">#FFFFFF</color>
+</resources>

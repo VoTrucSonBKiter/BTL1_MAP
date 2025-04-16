@@ -1,0 +1,25 @@
+<resources>
+    <string name="welcome_text">Trang chủ</string>
+    <string name="open_camera">Mở máy ảnh</string>
+    <string name="show_position">Xem vị trí</string>
+    <string name="sign_out">Đăng xuất</string>
+    <string name="capture_button">Chụp</string>
+    <string name="your_location">Your Location:</string>
+    <string name="get_location">Get Location</string>
+    <string name="app_name">BTL1_MAP</string>
+    <string name="email">Email</string>
+    <string name="pid">Mã số cá nhân</string>
+    <string name="login_button">Đăng nhập</string>
+    <string name="return_main">Quay lại</string>
+    <string name="find_surface">TÌM MẶT PHẲNG</string>
+    <string name="find_image">TÌM HÌNH ẢNH</string>
+    <string name="choose_display">CHỌN CÁCH HIỂN THỊ</string>
+    <string name="top_right_button">top_right_button</string>
+    <string name="contentDes">contentDescription</string>
+    <string name="info">Info</string>
+    <string name="practice">Practice</string>
+    <string name="doc">...</string>
+    <string name="homepage">MÀN HÌNH CHÍNH</string>
+    <string name="turn_on_camera">Camera</string>
+    <string name="joystick_knob">Joystick Knob</string>
+</resources>
