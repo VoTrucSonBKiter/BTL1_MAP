@@ -24,6 +24,9 @@ EditorBuildSettings:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: c50e70cb8f602a748b4fe51eb69a0c3e, type: 2}
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 5c120444d493a8345ac573a255ff641e, type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 3b94c613326edd3459b6a76f450f3741, type: 2}
+    com.unity.adaptiveperformance.google.android.provider_settings: {fileID: 11400000, guid: 66fc43ef3bcc48d418fbafb02cd35c00, type: 2}
+    com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 0ea04314e5c4cca43912477faaade09e, type: 2}
+    com.unity.adaptiveperformance.samsung.android.provider_settings: {fileID: 11400000, guid: e882f89537efecb4796c7265fc8effdb, type: 2}
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 36e3842da938a9445b2efe095a57362c, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 1cf6f31424f062045853d05527a76df3, type: 2}
