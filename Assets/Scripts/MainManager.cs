@@ -12,29 +12,14 @@ public class MainManager : MonoBehaviour
     [SerializeField] private Image findImageButton;      // For CameraScene
     [SerializeField] private Image findPlatformButton;   // For ARScene/PositionScene
     [SerializeField] private Image logoutButton;         // Logout button in footer
-    [SerializeField] private Image backButton;           // Back button if present
-
-    private void Awake()
-    {
-        // Make sure we have the EventSystem
-        if (FindAnyObjectByType<EventSystem>() == null)
-        {
-            Debug.LogError("No EventSystem found in the scene. Adding one.");
-            GameObject eventSystem = new GameObject("EventSystem");
-            eventSystem.AddComponent<EventSystem>();
-            eventSystem.AddComponent<StandaloneInputModule>();
-        }
-    }
 
     private void Start()
     {
         // Log what buttons we have
-        Debug.Log($"MainManager buttons - Image: {findImageButton != null}, Platform: {findPlatformButton != null}, " +
-                  $"Logout: {logoutButton != null}, Back: {backButton != null}");
+        Debug.Log($"MainManager buttons - Image: {findImageButton != null}, Platform: {findPlatformButton != null},Logout: {logoutButton != null} ");
         
         // Setup image buttons
         SetupImageButtons();
-        SetupBackButton(); // Set up the back button separately with the method that works in cam.cs
         Debug.Log("MainManager started and buttons set up");
     }
 
@@ -54,80 +39,13 @@ public class MainManager : MonoBehaviour
     public void OnLogoutButtonClickedDirect()
     {
         Debug.Log("Logout button clicked directly");
-        OnLogoutButtonClicked();
-    }
-
-    public void OnBackButtonClickedDirect()
-    {
-        Debug.Log("Back button clicked directly from Inspector");
-        GoToSignScene();
-    }
-
-    private void SetupBackButton()
-    {
-        if (backButton != null)
-        {
-            Debug.Log("Setting up back button with cam.cs method");
-            
-            // Make sure the GameObject is active
-            backButton.gameObject.SetActive(true);
-            
-            // Clean slate - remove any existing components that could interfere
-            EventTrigger existingTrigger = backButton.gameObject.GetComponent<EventTrigger>();
-            if (existingTrigger != null)
-            {
-                Destroy(existingTrigger);
-            }
-            
-            Button existingButton = backButton.gameObject.GetComponent<Button>();
-            if (existingButton != null)
-            {
-                Destroy(existingButton);
-            }
-            
-            // Add a Button component for direct clicking
-            Button btn = backButton.gameObject.AddComponent<Button>();
-            btn.onClick.AddListener(() => {
-                Debug.Log("Back button clicked via Button.onClick");
-                GoToSignScene();
-            });
-            
-            // Also add EventTrigger as a fallback
-            EventTrigger trigger = backButton.gameObject.AddComponent<EventTrigger>();
-            EventTrigger.Entry entry = new EventTrigger.Entry();
-            entry.eventID = EventTriggerType.PointerClick;
-            entry.callback.AddListener((data) => {
-                Debug.Log("Back button clicked via EventTrigger");
-                GoToSignScene();
-            });
-            trigger.triggers.Add(entry);
-            
-            // Add a BoxCollider2D for better touch detection
-            BoxCollider2D existingCollider = backButton.gameObject.GetComponent<BoxCollider2D>();
-            if (existingCollider != null)
-            {
-                Destroy(existingCollider);
-            }
-            
-            BoxCollider2D collider = backButton.gameObject.AddComponent<BoxCollider2D>();
-            RectTransform rect = backButton.GetComponent<RectTransform>();
-            if (rect != null)
-            {
-                // Make the collider larger for easier clicking
-                collider.size = new Vector2(rect.sizeDelta.x * 1.5f, rect.sizeDelta.y * 1.5f);
-                Debug.Log($"Added BoxCollider2D to back button with size {collider.size}");
-            }
-            
-            Debug.Log("Back button fully set up");
-        }
-    }
-
-    private void GoToSignScene()
-    {
-        Debug.Log("Navigating to SignScene");
         SceneManager.LoadScene("SignScene");
+        // Clear user data
+        PlayerPrefs.DeleteKey("UserToken");
+        PlayerPrefs.DeleteKey("UserName");
+        PlayerPrefs.Save();
+        Debug.Log("User data cleared and returned to SignScene");
     }
-
     private void SetupImageButtons()
     {
         // Try both approaches - event triggers and direct button clicks
@@ -171,7 +89,12 @@ public class MainManager : MonoBehaviour
         {
             ClearAndAddEventTrigger(logoutButton.gameObject, () => {
                 Debug.Log("Logout button clicked via event trigger");
-                OnLogoutButtonClicked();
+                SceneManager.LoadScene("CameraScene");
+                // Clear user data
+                PlayerPrefs.DeleteKey("UserToken");
+                PlayerPrefs.DeleteKey("UserName");
+                PlayerPrefs.Save();
+                Debug.Log("User data cleared and returned to SignScene");
             });
             
             // Add a direct button listener if the Image has a Button component
@@ -183,9 +106,6 @@ public class MainManager : MonoBehaviour
                 Debug.Log("Added Button component to logoutButton");
             }
             logoutBtn.onClick.AddListener(OnLogoutButtonClickedDirect);
-            
-            // Add a BoxCollider2D if needed for better touch detection
-            EnsureCollider(logoutButton.gameObject);
         }
     }
 
@@ -242,18 +162,5 @@ public class MainManager : MonoBehaviour
         {
             Debug.Log($"{obj.name} already has a collider");
         }
-    }
-
-    private void OnLogoutButtonClicked()
-    {
-        Debug.Log("Executing logout...");
-        
-        // Clear user data
-        PlayerPrefs.DeleteKey("UserToken");
-        PlayerPrefs.DeleteKey("UserName");
-        PlayerPrefs.Save();
-        
-        // Return to login screen
-        SceneManager.LoadScene("SignScene");
     }
 }

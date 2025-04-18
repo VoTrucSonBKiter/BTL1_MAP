@@ -11,22 +11,30 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Image footerImage;      // Footer image instead of GameObject
     [SerializeField] private string mainSceneName = "MainScene";
     [SerializeField] private bool isARScene = false;
-    [SerializeField] private bool maintainAspect = true;  // Keep camera aspect ratio
-    
-    private bool camAvailable;
-    private WebCamTexture cameraTexture;
-    private Texture defaultBackground;
-    private ScreenOrientation currentOrientation;
 
+    WebCamTexture webcam;    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // Force footer to be visible and active at the start
+        // Force footer to be visible and positioned correctly at the start
+        PositionFooterAtBottom();
         ForceFooterVisibility();
         
         // Log what we have
         Debug.Log($"CameraController - Display: {display != null}, BackButton: {backButtonImage != null}, " +
                  $"Footer: {footerImage != null}");
+        
+        if (display != null)
+        {
+            Debug.Log($"RawImage dimensions: {display.rectTransform.rect.width}x{display.rectTransform.rect.height}");
+        }
+        
+        webcam = new WebCamTexture();
+        display.texture = webcam;
+        webcam.Play();
+        Debug.Log("WebCamTexture started");
+
+        StartCoroutine(AdjustCameraOrientation());
         
         // Set up back button immediately
         SetupBackButton();
@@ -34,8 +42,109 @@ public class CameraController : MonoBehaviour
         // Ensure EventSystem exists
         EnsureEventSystem();
         
-        // Initialize camera with permission request
-        StartCoroutine(RequestCameraPermissionAndInitialize());
+    }
+    
+    // Add this coroutine to wait for the webcam to initialize before adjusting
+    private IEnumerator AdjustCameraOrientation()
+    {
+        // Wait a frame to ensure the webcam has initialized
+        yield return new WaitForEndOfFrame();
+        
+        if (webcam != null && webcam.isPlaying && display != null)
+        {
+            // Wait a bit longer for camera to fully initialize
+            yield return new WaitForSeconds(0.5f);
+            
+            // Get the device orientation to determine how to adjust
+            DeviceOrientation orientation = Input.deviceOrientation;
+            Debug.Log($"Device orientation: {orientation}, WebCam dimensions: {webcam.width}x{webcam.height}");
+            
+            // Set rotation to -90 degrees (clockwise rotation)
+            int rotationAngle = -90;
+            
+            // Apply rotation to the RawImage
+            display.rectTransform.localEulerAngles = new Vector3(0, 0, rotationAngle);
+            
+            // Reset the size to fill the container
+            RectTransform parentRect = display.transform.parent.GetComponent<RectTransform>();
+            if (parentRect != null)
+            {
+                // Set the size to match the parent's size
+                display.rectTransform.sizeDelta = Vector2.zero;
+                
+                // Center it in the parent
+                display.rectTransform.anchorMin = new Vector2(0, 0);
+                display.rectTransform.anchorMax = new Vector2(1, 1);
+                display.rectTransform.pivot = new Vector2(0.5f, 0.5f);
+                display.rectTransform.offsetMin = Vector2.zero;
+                display.rectTransform.offsetMax = Vector2.zero;
+                
+                // Calculate the aspect ratio adjustment needed for the rotation
+                float screenAspect = (float)Screen.width / Screen.height;
+                float webcamAspect = (float)webcam.width / webcam.height;
+                
+                // Since we rotated the camera, we need to invert the aspect ratio
+                float rotatedWebcamAspect = 1.0f / webcamAspect;
+                
+                // Calculate proper scale to maintain aspect ratio
+                float scaleY = 1.0f;
+                float scaleX = 1.0f;
+                
+                if (rotatedWebcamAspect < screenAspect)
+                {
+                    // Camera is taller than screen, fit to width and extend height
+                    scaleX = 1.0f;
+                    scaleY = screenAspect / rotatedWebcamAspect;
+                }
+                else
+                {
+                    // Camera is wider than screen, fit to height and extend width
+                    scaleX = rotatedWebcamAspect / screenAspect;
+                    scaleY = 1.0f;
+                }
+                
+                // Apply different fill factors for width and height
+                float yFillFactor = 0.9f;   // Keep vertical fill the same
+                float xFillFactor = 1.2f;   // Reduce horizontal stretch
+                
+                // Apply the adjusted scaling
+                display.rectTransform.localScale = new Vector3(scaleX * xFillFactor, scaleY * yFillFactor, 1);
+                
+                Debug.Log($"Applied non-uniform scaling - X:{scaleX * xFillFactor}, Y:{scaleY * yFillFactor}");
+                Debug.Log($"Screen aspect: {screenAspect}, Webcam aspect: {webcamAspect}, Rotated: {rotatedWebcamAspect}");
+            }
+            
+            Debug.Log($"Camera orientation adjusted: Rotation={rotationAngle}");
+        }
+        else
+        {
+            Debug.LogError("WebCam not initialized properly");
+        }
+    }
+    // Position the footer at the bottom of the screen
+    private void PositionFooterAtBottom()
+    {
+        if (footerImage != null)
+        {
+            // Get the footer's RectTransform
+            RectTransform footerRect = footerImage.GetComponent<RectTransform>();
+            if (footerRect != null)
+            {
+                // Anchor it to the bottom of the screen
+                footerRect.anchorMin = new Vector2(0, 0);
+                footerRect.anchorMax = new Vector2(1, 0);
+                footerRect.pivot = new Vector2(0.5f, 0);
+                
+                // Position it at the bottom with zero offset
+                footerRect.anchoredPosition = new Vector2(0, 0);
+                
+                Debug.Log("Footer positioned at the bottom of the screen");
+            }
+            else
+            {
+                Debug.LogError("Footer RectTransform is missing");
+            }
+        }
     }
     
     // Call this on Start and whenever needed to force footer visibility
@@ -78,54 +187,6 @@ public class CameraController : MonoBehaviour
             eventSystem.AddComponent<StandaloneInputModule>();
         }
     }
-
-    private IEnumerator RequestCameraPermissionAndInitialize()
-    {
-        Debug.Log("Requesting camera permission...");
-        
-        // Force footer visible again before permission
-        ForceFooterVisibility();
-        
-        // First request camera permission
-        yield return Application.RequestUserAuthorization(UserAuthorization.WebCam);
-        
-        // Force footer visible again after permission
-        ForceFooterVisibility();
-        
-        if (Application.HasUserAuthorization(UserAuthorization.WebCam))
-        {
-            Debug.Log("Camera permission granted");
-            InitializeCamera();
-        }
-        else
-        {
-            Debug.LogError("Camera permission denied");
-            // Show message to user
-            if (display != null)
-            {
-                GameObject textObj = new GameObject("PermissionDeniedText");
-                textObj.transform.SetParent(display.transform.parent);
-                
-                // Add and configure text component
-                Text text = textObj.AddComponent<Text>();
-                text.text = "Camera permission denied. Please allow camera access in settings.";
-                text.color = Color.red;
-                text.fontSize = 24;
-                text.alignment = TextAnchor.MiddleCenter;
-                
-                // Position the text
-                RectTransform rectTransform = text.GetComponent<RectTransform>();
-                rectTransform.anchorMin = new Vector2(0, 0);
-                rectTransform.anchorMax = new Vector2(1, 1);
-                rectTransform.offsetMin = Vector2.zero;
-                rectTransform.offsetMax = Vector2.zero;
-            }
-        }
-        
-        // Force footer visible one more time
-        ForceFooterVisibility();
-    }
-
     private void SetupBackButton()
     {
         if (backButtonImage != null)
@@ -194,184 +255,12 @@ public class CameraController : MonoBehaviour
     {
         Debug.Log("Back button clicked in camera scene - returning to: " + mainSceneName);
         
-        // Clean up camera resources before returning to main scene
-        if (cameraTexture != null && cameraTexture.isPlaying)
-        {
-            cameraTexture.Stop();
-        }
-        
         // Return to main scene
         SceneManager.LoadScene(mainSceneName);
     }
-    
-    private void InitializeCamera()
-    {
-        Debug.Log("Initializing camera...");
-        
-        // Force footer visible at camera initialization
-        ForceFooterVisibility();
-        
-        WebCamDevice[] devices = WebCamTexture.devices;
-        
-        if (devices.Length == 0)
-        {
-            Debug.Log("No camera detected");
-            camAvailable = false;
-            return;
-        }
-        
-        // List available cameras
-        for (int i = 0; i < devices.Length; i++)
-        {
-            Debug.Log($"Camera {i}: {devices[i].name}, isFrontFacing: {devices[i].isFrontFacing}");
-        }
-        
-        // Default to using any available camera
-        WebCamDevice selectedDevice = devices[0];
-        
-        // Try to find rear-facing camera for regular camera scene
-        if (!isARScene)
-        {
-            for (int i = 0; i < devices.Length; i++)
-            {
-                if (!devices[i].isFrontFacing)
-                {
-                    selectedDevice = devices[i];
-                    break;
-                }
-            }
-        }
-        // For AR scene, we might prefer back camera as well
-        else
-        {
-            for (int i = 0; i < devices.Length; i++)
-            {
-                if (!devices[i].isFrontFacing)
-                {
-                    selectedDevice = devices[i];
-                    break;
-                }
-            }
-        }
-        
-        Debug.Log($"Selected camera: {selectedDevice.name}");
-        
-        // Clean up any existing camera texture
-        if (cameraTexture != null)
-        {
-            if (cameraTexture.isPlaying)
-                cameraTexture.Stop();
-                
-            cameraTexture = null;
-        }
-        
-        // Create the camera texture with a moderate resolution
-        cameraTexture = new WebCamTexture(selectedDevice.name, 1280, 720, 30);
-        
-        if (cameraTexture == null)
-        {
-            Debug.LogError("Unable to initialize camera");
-            camAvailable = false;
-            return;
-        }
-        
-        // Start the camera
-        cameraTexture.Play();
-        
-        // Wait a moment for camera to start
-        StartCoroutine(WaitForCameraAndSetup());
-    }
-    
-    private IEnumerator WaitForCameraAndSetup()
-    {
-        yield return new WaitForSeconds(0.5f);
-        
-        // Assign camera texture to display
-        if (display != null)
-        {
-            display.texture = cameraTexture;
-            camAvailable = true;
-        }
-        
-        // Force footer visible after camera is running
-        ForceFooterVisibility();
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        // Check and ensure footer is visible EVERY frame
-        if (footerImage != null && !footerImage.gameObject.activeSelf)
-        {
-            ForceFooterVisibility();
-        }
-        
-        if (!camAvailable || cameraTexture == null || !cameraTexture.isPlaying)
-            return;
-            
-        // Handle video rotation for different device orientations
-        int orient = -cameraTexture.videoRotationAngle;
-        
-        // Apply rotation to display if needed
-        if (display != null)
-        {
-            display.rectTransform.localEulerAngles = new Vector3(0, 0, orient);
-            
-            // Check if video is mirrored and fix if needed
-            if (cameraTexture.videoVerticallyMirrored)
-            {
-                display.rectTransform.localScale = new Vector3(1, -1, 1);
-            }
-            else
-            {
-                display.rectTransform.localScale = Vector3.one;
-            }
-        }
-    }
-    
-    // Called when the camera scene is being left
-    void OnDestroy()
-    {
-        // Clean up camera resources
-        Debug.Log("CameraController being destroyed");
-        if (cameraTexture != null && cameraTexture.isPlaying)
-        {
-            cameraTexture.Stop();
-        }
-    }
-    
-    void OnDisable()
-    {
-        Debug.Log("CameraController disabled");
-        if (cameraTexture != null && cameraTexture.isPlaying)
-        {
-            cameraTexture.Stop();
-        }
-    }
-    
-    void OnApplicationPause(bool pauseStatus)
-    {
-        // Handle app pausing - crucial for Android
-        Debug.Log($"Application paused: {pauseStatus}");
-        
-        // Force footer visibility on app resume
-        if (!pauseStatus)
-        {
-            ForceFooterVisibility();
-        }
-        
-        if (cameraTexture != null)
-        {
-            if (pauseStatus)
-            {
-                if (cameraTexture.isPlaying)
-                    cameraTexture.Stop();
-            }
-            else if (camAvailable)
-            {
-                if (!cameraTexture.isPlaying)
-                    cameraTexture.Play();
-            }
-        }
-    }
 }
+    
+        
+ 
+    
