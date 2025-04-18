@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
         setupClickListener(R.id.ivFindSurface, CameraActivity.class);
         setupClickListener(R.id.btnFindSurface, CameraActivity.class);
 
-        setupClickListener(R.id.ivFindImage, PositionActivity.class);
-        setupClickListener(R.id.btnFindImage, PositionActivity.class);
+        setupClickListener(R.id.ivFindImage, ModelActivity.class);
+        setupClickListener(R.id.btnFindImage, ModelActivity.class);
 
         setupClickListener(R.id.ivTopRight, SignActivity.class);
     }

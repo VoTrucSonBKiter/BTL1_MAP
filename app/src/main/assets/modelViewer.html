@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <script src="https://unpkg.com/focus-visible@5.0.2/dist/focus-visible.js" defer></script>
+    <style>
+        html, body {
+            margin: 0;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background-color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        #loading-message {
+            position: absolute;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            z-index: 1;
+        }
+
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+        }
+
+        model-viewer::part(default-progress-bar) {
+            display: none; /* Hide loading bar */
+        }
+    </style>
+    <title></title>
+</head>
+<body>
+<!-- Loading message -->
+<div id="loading-message">Loading ...</div>
+
+<!-- 3D Model -->
+<model-viewer
+        id="reveal"
+        loading="auto"
+        camera-controls
+        auto-rotate
+        ar-modes="scene-viewer webxr quick-look"
+        src="https://cdn.jsdelivr.net/gh/anhquan268/AndroidStudio@main/earth.glb"
+        alt="Earth model">
+</model-viewer>
+
+<!-- Script to handle loading -->
+<script>
+    const modelViewer = document.getElementById('reveal');
+    const loadingMessage = document.getElementById('loading-message');
+
+    modelViewer.addEventListener('load', () => {
+      loadingMessage.style.display = 'none';
+    });
+
+    modelViewer.addEventListener('error', (e) => {
+      loadingMessage.textContent = 'Failed to load 3D model 😢';
+      console.error('Model failed to load:', e);
+    });
+</script>
+</body>
+</html>

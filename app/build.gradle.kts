@@ -56,8 +56,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     // Sceneform để hiển thị mô hình 3D
-    implementation("com.google.ar.sceneform:core:1.17.1")
-    implementation("com.google.ar.sceneform.ux:sceneform-ux:1.17.1")
+    implementation("io.github.sceneview:sceneview:0.10.0")
 
 
     // Thư viện joystick (tùy chọn)

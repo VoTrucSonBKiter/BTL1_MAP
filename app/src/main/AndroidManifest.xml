@@ -37,8 +37,8 @@
             android:theme="@style/Theme.BTL1_MAP"
             tools:ignore="Instantiatable" />
 
-        <!-- Position Activity -->
-        <activity android:name=".PositionActivity"
+        <!-- Model Activity -->
+        <activity android:name=".ModelActivity"
             android:exported="false"
             tools:ignore="Instantiatable" />
 

@@ -22,4 +22,6 @@
     <string name="homepage">MÀN HÌNH CHÍNH</string>
     <string name="turn_on_camera">Camera</string>
     <string name="joystick_knob">Joystick Knob</string>
+    <string name="model_viewer_location">file:///android_asset/modelViewer.html</string>
+    <string name="toast_message">The "Earth" 3D model</string>
 </resources>
