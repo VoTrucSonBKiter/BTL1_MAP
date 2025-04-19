@@ -2,6 +2,7 @@ package com.example.btl1_map;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -10,12 +11,34 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.bumptech.glide.Glide;
+import android.content.res.ColorStateList;
+import androidx.core.content.ContextCompat;
+import android.util.Log;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.widget.Button;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.camera.core.Camera;
+import androidx.camera.core.CameraSelector;
+import androidx.camera.core.Preview;
+import androidx.camera.lifecycle.ProcessCameraProvider;
+import androidx.camera.view.PreviewView;
+import androidx.core.app.ActivityCompat;
+
+import com.google.common.util.concurrent.ListenableFuture;
+
+import java.util.concurrent.ExecutionException;
 
 public class ModelActivity extends AppCompatActivity {
+    private static final int REQUEST_CAMERA_PERMISSION = 100;
+    private PreviewView previewView;
+    protected Button buttonToggleCamera;
+    private ProcessCameraProvider cameraProvider;
+    private Camera camera;
+    private boolean isCameraOn = false;
     private float joystickLeftX, joystickLeftY, joystickRightX, joystickRightY;
     private WebView modelView;
     private FrameLayout modelShow;
@@ -26,8 +49,36 @@ public class ModelActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_model);
 
+        previewView = findViewById(R.id.preview_view);
+        View buttonToggleCamera = findViewById(R.id.button_toggle_camera);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    REQUEST_CAMERA_PERMISSION);
+        } else {
+            startCamera();
+            buttonToggleCamera.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.new_blue))); // Giữ shape, đổi màu button
+            isCameraOn = true;
+        }
+
+        // Xử lý sự kiện bật/tắt camera
+        buttonToggleCamera.setOnClickListener(v -> {
+            if (isCameraOn) {
+                stopCamera();
+                buttonToggleCamera.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white))); // Giữ shape, đổi màu button
+                isCameraOn = false;
+            } else {
+                startCamera();
+                buttonToggleCamera.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.new_blue))); // Giữ shape, đổi màu button
+                isCameraOn = true;
+            }
+        });
+
         modelView = findViewById(R.id.modelWebView);
         modelShow = findViewById(R.id.modelShowView);
+        modelView.setBackgroundColor(Color.TRANSPARENT);
 
         if (modelView != null) {
             modelView.loadUrl(getString(R.string.model_viewer_location));
@@ -44,16 +95,13 @@ public class ModelActivity extends AppCompatActivity {
         ImageView joystickRightKnob = findViewById(R.id.joystickRightKnob);
         ImageView ivTop1 = findViewById(R.id.ivTop1);
         ImageView ivTop2 = findViewById(R.id.ivTop2);
-        ImageView ivTop3 = findViewById(R.id.ivTop3);
-        ImageView ivTop4 = findViewById(R.id.ivTop4);
+
         ImageView bottomLeftButton = findViewById(R.id.ivBottomLeft);
 
-        Glide.with(this).load("https://i.imgur.com/rQSGf2Z.png").into(joystickLeftKnob);
-        Glide.with(this).load("https://i.imgur.com/rQSGf2Z.png").into(joystickRightKnob);
+        Glide.with(this).load("https://i.imgur.com/So6FKTd.png").into(joystickLeftKnob);
+        Glide.with(this).load("https://i.imgur.com/So6FKTd.png").into(joystickRightKnob);
         Glide.with(this).load("https://i.imgur.com/GIhjn00.png").into(ivTop1);
         Glide.with(this).load("https://i.imgur.com/XSvShr4.png").into(ivTop2);
-        Glide.with(this).load("https://i.imgur.com/fMgTuhm.png").into(ivTop3);
-        Glide.with(this).load("https://i.imgur.com/Dfr0qOp.png").into(ivTop4);
         Glide.with(this).load("https://i.imgur.com/CaB5uuZ.png").into(bottomLeftButton);
 
         TextView tvModelInfo = findViewById(R.id.tvModelInfo);
@@ -217,6 +265,58 @@ public class ModelActivity extends AppCompatActivity {
 
         modelView.setTranslationX(newTranslationX);
         modelView.setTranslationY(newTranslationY);
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startCamera();
+                buttonToggleCamera.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.new_blue))); // Giữ shape, đổi màu button
+                isCameraOn = true;
+            } else {
+                Toast.makeText(this, "Quyền truy cập máy ảnh bị từ chối", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    // Khởi động camera
+    private void startCamera() {
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
+                ProcessCameraProvider.getInstance(this);
+
+        cameraProviderFuture.addListener(() -> {
+            try {
+                cameraProvider = cameraProviderFuture.get();
+
+                // Tạo Preview
+                Preview preview = new Preview.Builder().build();
+                preview.setSurfaceProvider(previewView.getSurfaceProvider());
+
+                CameraSelector cameraSelector = new CameraSelector.Builder()
+                        .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                        .build();
+
+                cameraProvider.unbindAll();
+                camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview);
+
+            } catch (ExecutionException | InterruptedException e) {
+                Log.e("CameraActivity", "Lỗi khi khởi động máy ảnh", e);
+                Toast.makeText(this, "Lỗi khi khởi động máy ảnh", Toast.LENGTH_SHORT).show();
+            }
+        }, ContextCompat.getMainExecutor(this));
+    }
+
+    // Tắt camera
+    private void stopCamera() {
+        if (cameraProvider != null) {
+            cameraProvider.unbindAll();
+            camera = null;
+        }
+    }
+
+    public Camera getCamera() {
+        return camera;
     }
 
 }
