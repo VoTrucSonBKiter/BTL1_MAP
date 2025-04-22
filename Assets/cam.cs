@@ -9,9 +9,11 @@ public class CameraController : MonoBehaviour
     [SerializeField] private RawImage display;
     [SerializeField] private Image backButtonImage;  // Back button image
     [SerializeField] private Image footerImage;      // Footer image instead of GameObject
+    [SerializeField] private Button stopCameraButton;
     [SerializeField] private string mainSceneName = "MainScene";
     [SerializeField] private bool isARScene = false;
 
+    private Texture2D lastFrameTexture;
     WebCamTexture webcam;    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -42,8 +44,63 @@ public class CameraController : MonoBehaviour
         // Ensure EventSystem exists
         EnsureEventSystem();
         
+        // Set up the stop camera button
+        if (stopCameraButton != null)
+        {
+            stopCameraButton.onClick.AddListener(OnStopCameraButtonClicked);
+            Debug.Log("Stop camera button set up");
+        }
+        else
+        {
+            Debug.LogError("Stop camera button reference is missing");
+        }
     }
     
+// Public method that can be called from UI Button OnClick
+    // Public method that can be called from UI Button OnClick
+    public void OnStopCameraButtonClicked()
+    {
+        Debug.Log("Camera play/pause button clicked");
+        
+        if (webcam != null)
+        {
+            if (webcam.isPlaying)
+            {
+                // Capture the current frame before stopping
+                if (lastFrameTexture == null || lastFrameTexture.width != webcam.width || lastFrameTexture.height != webcam.height)
+                {
+                    lastFrameTexture = new Texture2D(webcam.width, webcam.height);
+                }
+                
+                // Copy the current webcam frame to our texture
+                lastFrameTexture.SetPixels(webcam.GetPixels());
+                lastFrameTexture.Apply();
+                
+                // Pause by stopping the camera
+                webcam.Stop();
+                
+                // Display the last frame instead of graying out
+                display.texture = lastFrameTexture;
+                display.color = Color.white;
+                
+                Debug.Log("Camera paused - last frame captured");
+            }
+            else
+            {
+                // Recreate the WebCamTexture to ensure it restarts properly
+                webcam = new WebCamTexture();
+                display.texture = webcam;
+                
+                webcam.Play();
+                display.color = Color.white; // Reset display color
+                Debug.Log("Camera restarted with new WebCamTexture");
+                
+                // Re-adjust camera orientation after a short delay
+                StartCoroutine(AdjustCameraOrientation());
+            }
+        }
+    }
+
     // Add this coroutine to wait for the webcam to initialize before adjusting
     private IEnumerator AdjustCameraOrientation()
     {
