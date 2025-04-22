@@ -66,41 +66,65 @@ public class CameraController : MonoBehaviour
         {
             if (webcam.isPlaying)
             {
-                // Capture the current frame before stopping
-                if (lastFrameTexture == null || lastFrameTexture.width != webcam.width || lastFrameTexture.height != webcam.height)
+                // Make sure the webcam has had time to initialize properly
+                if (!webcam.didUpdateThisFrame)
                 {
-                    lastFrameTexture = new Texture2D(webcam.width, webcam.height);
+                    Debug.Log("Waiting for a valid frame before pausing...");
+                    // You could add a loading indicator here if needed
+                    StartCoroutine(PauseCameraWhenReady());
+                    return;
                 }
                 
-                // Copy the current webcam frame to our texture
-                lastFrameTexture.SetPixels(webcam.GetPixels());
+                // Ensure texture is created with correct dimensions
+                if (lastFrameTexture == null || lastFrameTexture.width != webcam.width || lastFrameTexture.height != webcam.height)
+                {
+                    lastFrameTexture = new Texture2D(webcam.width, webcam.height, TextureFormat.RGBA32, false);
+                }
+                
+                // Copy the current webcam frame to our texture - ensure we have a valid frame
+                lastFrameTexture.SetPixels32(webcam.GetPixels32());
                 lastFrameTexture.Apply();
                 
-                // Pause by stopping the camera
-                webcam.Stop();
-                
-                // Display the last frame instead of graying out
+                // IMPORTANT: Set the display texture BEFORE stopping the camera
                 display.texture = lastFrameTexture;
                 display.color = Color.white;
                 
-                Debug.Log("Camera paused - last frame captured");
+                // Now pause by stopping the camera
+                webcam.Stop();
+                
+                Debug.Log("Camera paused - last frame captured and displayed");
             }
             else
             {
-                // Recreate the WebCamTexture to ensure it restarts properly
+                // Rest of your code remains the same...
                 webcam = new WebCamTexture();
                 display.texture = webcam;
                 
                 webcam.Play();
-                display.color = Color.white; // Reset display color
+                display.color = Color.white;
                 Debug.Log("Camera restarted with new WebCamTexture");
                 
-                // Re-adjust camera orientation after a short delay
                 StartCoroutine(AdjustCameraOrientation());
             }
         }
     }
 
+    // New coroutine to wait for a valid frame before pausing
+    private IEnumerator PauseCameraWhenReady()
+    {
+        // Wait until we have a valid frame to capture
+        int attemptCount = 0;
+        int maxAttempts = 10;
+        
+        while (!webcam.didUpdateThisFrame && attemptCount < maxAttempts)
+        {
+            yield return new WaitForEndOfFrame();
+            attemptCount++;
+        }
+        
+        // Now try pausing again
+        OnStopCameraButtonClicked();
+    }
     // Add this coroutine to wait for the webcam to initialize before adjusting
     private IEnumerator AdjustCameraOrientation()
     {

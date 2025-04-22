@@ -10,8 +10,8 @@ using System;
 public class SignManager : MonoBehaviour
 {
     [Header("UI References")]
-    [SerializeField] private TMP_InputField emailInput;
-    [SerializeField] private TMP_InputField pidInput;
+    [SerializeField] private InputField emailInput;  // Changed from TMP_InputField
+    [SerializeField] private InputField pidInput;    // Changed from TMP_InputField
     [SerializeField] private Button loginButton;
     [SerializeField] private TextMeshProUGUI statusText;
 
