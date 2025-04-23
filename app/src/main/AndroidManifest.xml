@@ -42,6 +42,12 @@
             android:exported="false"
             tools:ignore="Instantiatable" />
 
+        <!-- Model Activity -->
+        <activity android:name=".WebStreamActivity"
+            android:exported="false"
+            android:theme="@style/Theme.BTL1_MAP"
+            tools:ignore="Instantiatable" />
+
     </application>
 
 

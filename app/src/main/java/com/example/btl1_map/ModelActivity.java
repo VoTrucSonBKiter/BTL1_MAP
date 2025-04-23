@@ -121,6 +121,12 @@ public class ModelActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+        ivTop2.setOnClickListener(v -> {
+            Intent intent = new Intent(ModelActivity.this, WebStreamActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
     }
     @SuppressLint("ClickableViewAccessibility")
     private void setupJoysticks() {
